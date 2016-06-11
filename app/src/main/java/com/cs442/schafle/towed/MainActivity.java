@@ -3,6 +3,7 @@ package com.cs442.schafle.towed;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -24,8 +25,9 @@ import mehdi.sakout.fancybuttons.FancyButton;
 public class MainActivity extends AppCompatActivity {
 
     EditText vehicleNumber;
-    TextView display_text;
-    String vehicleNumberValue = "";
+    TextView displayFound;
+    TextView displayLocation;
+    TextView displayContact;
     FancyButton btnSubmit;
     JSONObject jobj;
     @Override
@@ -33,9 +35,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         vehicleNumber = (EditText) findViewById(R.id.vehicle_number);
-        display_text = (TextView) findViewById(R.id.text12);
+        displayFound = (TextView) findViewById(R.id.display_found);
+        displayLocation = (TextView) findViewById(R.id.display_location);
+        displayContact = (TextView) findViewById(R.id.display_contact);
         btnSubmit = (FancyButton) findViewById(R.id.btnSubmit);
-        display_text.setVisibility(View.INVISIBLE);
+        displayFound.setVisibility(View.INVISIBLE);
+        displayLocation.setVisibility(View.INVISIBLE);
+        displayContact.setVisibility(View.INVISIBLE);
         //OnCLick Listener Event
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -47,7 +53,9 @@ public class MainActivity extends AppCompatActivity {
                 new Request().execute(url);
                 //Log.d("Towed: ", url);
                 //Log.d("Towed: ", jobj.toString());
-                display_text.setVisibility(View.VISIBLE);
+                displayFound.setVisibility(View.VISIBLE);
+                displayLocation.setVisibility(View.VISIBLE);
+                displayContact.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -109,7 +117,11 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String json) {
 
-            display_text.setText(json);
+            displayFound.setText("Not Found!");
+            displayLocation.setText("400 E. Lower Wacker"+" Dr");
+            Linkify.addLinks(displayLocation, Linkify.MAP_ADDRESSES);
+            displayContact.setText("(312) 744-7550");
+            Linkify.addLinks(displayContact, Linkify.PHONE_NUMBERS);
 
         }
 
