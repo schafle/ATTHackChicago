@@ -24,4 +24,13 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.2.0'
     compile 'com.github.medyo:fancybuttons:1.8'
+    compile files('libs/httpclient-4.2.1.jar')
+    compile files('libs/httpcore-4.2.3.jar')
+}
+
+android{
+    packagingOptions{
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
 }
