@@ -14,6 +14,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -115,15 +117,58 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(String json) {
+        protected void onPostExecute (String json){
 
-            displayFound.setText("Not Found!");
-            displayLocation.setText("400 E. Lower Wacker"+" Dr");
-            Linkify.addLinks(displayLocation, Linkify.MAP_ADDRESSES);
-            displayContact.setText("(312) 744-7550");
-            Linkify.addLinks(displayContact, Linkify.PHONE_NUMBERS);
+            String license_no = "";
+            String tow_address = "";
+            String tow_phone = "";
+            //String relocated_address = "";
+            //String relocated_phone = "";
+            if (json.isEmpty()) {
 
+                displayFound.setText("DATA NOT FOUND !!");
+            } else {
+                //Toast.makeText(MainActivity.this,"JSON data KK="+json,Toast.LENGTH_SHORT).show();
+                //display_found.setText("Yes->Towed !!");
+
+                try {
+                    //if(request_id.equalsIgnoreCase("tow")) {
+                    JSONArray arr = new JSONArray(json);
+
+                    //loop through each object
+                    for (int i = 0; i < arr.length(); i++) {
+
+                        JSONObject jsonProductObject = arr.getJSONObject(i);
+                        license_no = jsonProductObject.getString("plate");
+                        //Toast.makeText(MainActivity.this, "LICENSE data KK=" + license_no, Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this, "VH NO data KK=" + vehicleNumber.getText().toString(), Toast.LENGTH_SHORT).show();
+
+
+                        tow_address = jsonProductObject.getString("towed_to_address");
+                        tow_phone = jsonProductObject.getString("tow_facility_phone");
+                        // relocated_address = jsonProductObject.getString("relocated_to_street_name");
+                        //relocated_phone = jsonProductObject.getString("service_request_number");
+
+                    }
+
+                    //handle first request
+                    // if(request_id.equalsIgnoreCase("tow")) {
+                    if (vehicleNumber.getText().toString().equals(license_no)) {
+                        displayFound.setText("Towed !!");
+                        displayLocation.setText(tow_address);
+                        displayContact.setText(tow_phone);
+                        Linkify.addLinks(displayLocation, Linkify.MAP_ADDRESSES);
+                        Linkify.addLinks(displayContact, Linkify.PHONE_NUMBERS);
+                        //        request_id = "tow_successful";
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                //display_location.setText("");
+            }
         }
+
 
     }
 }
